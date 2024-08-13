@@ -1,9 +1,8 @@
-export default function Input({isTextarea, label, id, onInputChange, ...props}) {
+import {forwardRef} from "react";
+
+const Input = forwardRef(function Input({isTextarea, label, id, ...props}, ref) {
     const classes = "w-full p-1 border-b-2 rounded-sm border-stone-300 bg-stone-200 text-stone-600 focus:outline-none focus:border-stone-600";
 
-    const handleChange = (event) => {
-        onInputChange(id, event.target.value)
-    }
 
     return <p className="flex flex-col gap-1 my-4">
         <label
@@ -13,10 +12,12 @@ export default function Input({isTextarea, label, id, onInputChange, ...props}) 
         </label>
 
         {isTextarea ?
-            (<textarea className={classes} {...props} onChange={handleChange}></textarea>
+            (<textarea ref={ref} className={classes} {...props} placeholder={label.toUpperCase()}></textarea>
             ) : (
-            <input className={classes} {...props} onChange={handleChange}/>)
+            <input ref={ref} className={classes} {...props} placeholder={label.toUpperCase()}/>)
         }
     </p>
 
-}
+})
+
+export default Input;
