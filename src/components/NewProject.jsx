@@ -1,9 +1,15 @@
-import {useRef} from "react";
+import {useRef, useState} from "react";
 import Input from "./helper/Input.jsx";
 import Button from "./helper/Button.jsx";
 
 export default function NewProject({ onSubmit }) {
-    const projectName = useRef();
+    const [newProject, setNewProject] = useState({});
+
+    const handleInputChange = (id, value) => {
+        const updatedProject = {...newProject, [id]: value};
+        setNewProject(updatedProject);
+        onSubmit(updatedProject);
+    }
 
     return <div className="w-[35rem] mt-16">
         <menu className="flex items-center justify-end gap-4 my-4">
@@ -11,9 +17,9 @@ export default function NewProject({ onSubmit }) {
             <li><Button>Save</Button></li>
         </menu>
         <form>
-            <Input type="text" label="titel"/>
-            <Input isTextarea label="description"/>
-            <Input type="date" label="Due Date"/>
+            <Input type="text" label="titel" id="titel" onInputChange={handleInputChange}/>
+            <Input isTextarea label="description" id="description" onInputChange={handleInputChange}/>
+            <Input type="date" label="due date" id="dueDate" onInputChange={handleInputChange}/>
         </form>
     </div>
 }

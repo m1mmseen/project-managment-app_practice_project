@@ -3,6 +3,8 @@ import {useState} from "react";
 import NewProject from "./components/NewProject.jsx";
 import Fallback from "./components/helper/Fallback.jsx";
 
+export default App;
+
 function App() {
     const [projectState, setProjectState] = useState({
         selectedProject: undefined,
@@ -18,26 +20,26 @@ function App() {
         })
     }
 
-    function handleAddNewProject({projectName}) {
-        console.log("arrives");
-        setAddProjectClicked(false);
-        console.log(projectName);
-    }
+    const handleAddProject = (newProject) => {
+        setProjectState((prevState) => ({
+            ...prevState,
+            projects: [...prevState.projects, newProject]
+        }));
+    };
 
     let content;
 
     if(projectState.selectedProject === undefined) {
         content = <Fallback onAddNewProject={handleStartAddProject}/>
     } else if (projectState.selectedProject === null) {
-        content = <NewProject/>
+        content = <NewProject onSubmit={handleAddProject}/>
     }
 
-  return (
-    <main className="h-screen my-8 flex gap-8">
-      <Sidebar onAddNewProject={handleStartAddProject} onSubmit={handleAddNewProject}/>
-        {content}
-    </main>
-  );
+    return (
+        <main className="h-screen my-8 flex gap-8">
+            <Sidebar onAddNewProject={handleStartAddProject}/>
+            {content}
+            {projectState.projects.map(project =>  <p>{project.titel}</p>)}
+        </main>
+    );
 }
-
-export default App;
