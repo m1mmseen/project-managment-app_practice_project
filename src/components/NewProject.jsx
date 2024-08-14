@@ -1,11 +1,13 @@
 import {useRef} from "react";
 import Input from "./helper/Input.jsx";
 import Button from "./helper/Button.jsx";
+import Modal from "./helper/Modal.jsx";
 
 export default function NewProject({ onSubmit, onCancel }) {
     const projectNameRef = useRef();
     const projectDescriptionRef = useRef();
     const projectDueDateRef = useRef();
+    const dialog = useRef()
 
     const handleInputChange = (event) => {
 
@@ -14,6 +16,16 @@ export default function NewProject({ onSubmit, onCancel }) {
             projectDescription: projectDescriptionRef.current.value,
             projectDueDate: projectDueDateRef.current.value,
         };
+
+        if(
+            newProject.projectName.trim() === '' ||
+            newProject.projectDescription.trim() ||
+            newProject.projectDueDate.trim())
+        {
+            dialog.current.open();
+            return;
+        }
+
         onSubmit(newProject);
         projectNameRef.current.value = '';
         projectDescriptionRef.current.value = '';
@@ -30,5 +42,9 @@ export default function NewProject({ onSubmit, onCancel }) {
             <Input isTextarea label="description" id="description" ref={projectDescriptionRef}/>
             <Input type="date" label="due date" id="dueDate" ref={projectDueDateRef}/>
         </form>
+        <Modal ref={dialog} buttonCaption="Close">
+            <h3>Invalid input</h3>
+            <p>Please check the inputs</p>
+        </Modal>
     </div>
 }
