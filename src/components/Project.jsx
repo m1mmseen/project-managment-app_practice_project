@@ -1,8 +1,10 @@
 import Input from "./helper/Input.jsx";
-import {useState} from "react";
+import {useRef, useState} from "react";
+import Task from "./helper/Task.jsx";
 
 export default function Project({project, onDelete}) {
     const [tasks, setTasks] = useState([]);
+    const task = useRef();
 
     const formattedDate = new Date(project.projectDueDate).toLocaleDateString('de-DE', {year: 'numeric', month: 'short', day: 'numeric'})
 
@@ -17,8 +19,12 @@ export default function Project({project, onDelete}) {
         ))}
     </ul>
 
-    const handleNewTask = ({title, index}) => {
+    const handleNewTask = ({}) => {
 
+    }
+
+    const handleTaskDelete = (id) => {
+        tasks.filter((task) => task.taskId === id)
     }
 
     return <>
@@ -31,15 +37,17 @@ export default function Project({project, onDelete}) {
                 <p className="mb-4 text-stone-400">{formattedDate}</p>
                 <p className="text-stone-600 whitespace-pre-wrap">{project.projectDescription}</p>
             </header>
-        </div>
-        {/*<div id="tasks">
-            <h3>Tasks</h3>
             <div>
-                <input/>
-                <button>Add Task</button>
+                <h2 className="text-2xl font-bold text-stone-700 mb-4">Tasks</h2>
+                <div className="w-full flex flex-row justify-between gap-2">
+                    <input className="w-2/3 px-2 py-1 rounded-sm bg-stone-100 border-b-2 focus:outline-none focus:border-stone-600" ref={task}/>
+                    <button className="w-1/3 text-stone-800 rounded px-4 bg-stone-200 hover:bg-stone-300">Add Task</button>
+                </div>
+                {tasks.length > 0 ? tasks : <p className="text-stone-800 my-4">This project does not have any tasks yet</p>}
+                <Task taskName={"Dummy"}/>
             </div>
-            {tasks.length > 0 ? tasks : <p>This project does not have any tasks yet</p>}
-        </div>*/}
+        </div>
+
 
     </>
 }

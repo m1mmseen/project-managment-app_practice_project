@@ -19,8 +19,8 @@ export default function NewProject({ onSubmit, onCancel }) {
 
         if(
             newProject.projectName.trim() === '' ||
-            newProject.projectDescription.trim() ||
-            newProject.projectDueDate.trim())
+            newProject.projectDescription.trim() === '' ||
+            newProject.projectDueDate.trim() === '')
         {
             dialog.current.open();
             return;
