@@ -43,8 +43,8 @@ export default function NewProject({ onSubmit, onCancel }) {
             <Input type="date" label="due date" id="dueDate" ref={projectDueDateRef}/>
         </form>
         <Modal ref={dialog} buttonCaption="Close">
-            <h3>Invalid input</h3>
-            <p>Please check the inputs</p>
+            <h2 className="text-xl font-bold text-stone-500 my-4">Invalid input</h2>
+            <p className="text-stone-400 mb-4">Please check the inputs</p>
         </Modal>
     </div>
 }

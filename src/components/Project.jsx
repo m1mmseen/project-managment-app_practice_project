@@ -1,31 +1,64 @@
 import Input from "./helper/Input.jsx";
 import {useRef, useState} from "react";
 import Task from "./helper/Task.jsx";
+import Modal from "./helper/Modal.jsx";
 
 export default function Project({project, onDelete}) {
-    const [tasks, setTasks] = useState([]);
+    const [tasks, setTasks] = useState({
+        selectedTask: undefined,
+        tasks: []
+    });
     const task = useRef();
+    const dialog = useRef();
 
     const formattedDate = new Date(project.projectDueDate).toLocaleDateString('de-DE', {year: 'numeric', month: 'short', day: 'numeric'})
 
-    const tasksContent =  <ul className="p-4 mt-8 rounded-md bg-stone-100">
-        {tasks.map((task, index) => (
-            <li className="flex justify-between my-4" key={index}>
-                <p>
-                    <p>{task.title}</p>
-                    <button>Clear</button>
-                </p>
-            </li>
-        ))}
-    </ul>
-
-    const handleNewTask = ({}) => {
-
+    const handleNewTask = () => {
+        if(task.current.value.trim() === '') {
+            dialog.current.open();
+            return;
+        }
+        const newTask = {
+            taskName: task.current.value,
+            taskId: Math.random()
+        }
+        setTasks(prevState => {
+            return {
+                selectedTask: undefined,
+                tasks: [newTask, ...prevState.tasks]
+            }
+        })
+        task.current.value = '';
     }
 
     const handleTaskDelete = (id) => {
-        tasks.filter((task) => task.taskId === id)
+
+        setTasks((prevState) => {
+            return {
+                ...prevState,
+                tasks: prevState.tasks.filter(
+                    (task) => task.taskId !== id
+                ),
+            };
+        });
     }
+
+    let content;
+
+    if (tasks.tasks.length < 0) {
+        content = <p>There are now task here yet.</p>
+    } else { content =  <ul className="w-full">
+        {tasks.tasks.map((task) => {
+            return (
+                <li className="w-full flex justify-between mt-4 p-4 rounded-md bg-stone-100 shadow-md hover:translate-x-1 duration-300" key={task.taskId}>
+                    <p>{task.taskName}</p>
+                    <button onClick={() => handleTaskDelete(task.taskId)} className="text-stone-700 hover:text-red-500">Delete</button>
+                </li>
+            )
+        })}
+    </ul>
+    }
+
 
     return <>
         <div className="w-[35rem] mt-16">
@@ -40,14 +73,21 @@ export default function Project({project, onDelete}) {
             <div>
                 <h2 className="text-2xl font-bold text-stone-700 mb-4">Tasks</h2>
                 <div className="w-full flex flex-row justify-between gap-2">
-                    <input className="w-2/3 px-2 py-1 rounded-sm bg-stone-100 border-b-2 focus:outline-none focus:border-stone-600" ref={task}/>
-                    <button className="w-1/3 text-stone-800 rounded px-4 bg-stone-200 hover:bg-stone-300">Add Task</button>
+                    <input
+                        className="w-2/3 px-2 py-1 rounded-sm bg-stone-100 border-b-2 focus:outline-none focus:border-stone-600"
+                        ref={task}
+                        onKeyDown={(e) => {
+                            if(e.key === "Enter") {
+                                handleNewTask()
+                        }}}/>
+                    <button className="w-1/3 text-stone-800 rounded px-4 bg-stone-200 hover:bg-stone-300" onClick={handleNewTask}>Add Task</button>
                 </div>
-                {tasks.length > 0 ? tasks : <p className="text-stone-800 my-4">This project does not have any tasks yet</p>}
-                <Task taskName={"Dummy"}/>
+                {content}
             </div>
         </div>
-
-
+        <Modal ref={dialog} buttonCaption="Close">
+            <h2 className="text-xl font-bold text-stone-500 my-4">Invalid input</h2>
+            <p className="text-stone-400 mb-4">Please check the inputs</p>
+        </Modal>
     </>
 }

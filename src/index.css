@@ -5,3 +5,10 @@
 body {
     overflow: hidden;
 }
+
+
+@layer components {
+    .sidebar {
+        @apply w-[35rem] px-8 py-16 bg-stone-900 text-stone-50 md:w-[35rem] rounded-r-xl
+    }
+}
